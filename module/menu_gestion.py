@@ -1,9 +1,12 @@
 # -*- coding: utf8 -*-
+"""menu for use gestion_bdd"""
 
 from module.request import Downloads
 from module.bdd import Data
 
+
 class Navigation:
+    """main menu of gestion_bdd"""
     def __init__(self):
         self.menu = "init"
         self.on = True
@@ -139,15 +142,17 @@ class Navigation:
         print("q-Quitter le programme")
         self.choice()
 
-class Sous_Menu(Navigation):
 
+class Sous_Menu(Navigation):
+    """submenu is for when we need to quit the program"""
     def __init__(self):
         Navigation.__init__(self)
         self.stay = True
         self.categories = Data.get_categories()
 
-class Download_Nav(Sous_Menu):
 
+class Download_Nav(Sous_Menu):
+    """Download menu, you can type the category you want DL"""
     def __init__(self):
         Sous_Menu.__init__(self)
         self.count = 0
@@ -195,16 +200,17 @@ class Download_Nav(Sous_Menu):
     def accueil(self):
         print(" ")
         print("Télécharger des données.")
-        print("Il y a actuellement", len(self.categories) ,"catégories:")
+        print("Il y a actuellement", len(self.categories), "catégories:")
         for i in self.categories:
-            print (" -", i)
+            print("-", i)
         print("Quelle nouvelle catégorie voulez vous télécharger?")
         print("r-retourner au menu principal")
         print("q-quitter le programme")
         self.choice()
 
-class Dl_Ready_Nav(Sous_Menu):
 
+class Dl_Ready_Nav(Sous_Menu):
+    """Second download menu, if you have found a new category for the database."""
     def __init__(self, count, category):
         Sous_Menu.__init__(self)
         self.category = category
@@ -228,7 +234,7 @@ class Dl_Ready_Nav(Sous_Menu):
     def accueil(self):
         print(" ")
         print("Catégorie trouvée!")
-        print("Il y a", self.count ,"produits dans la catégorie", self.category)
+        print("Il y a", self.count, "produits dans la catégorie", self.category)
         print("Voulez-vous télécharger cette catégorie?(y/n)")
         print("q-quitter le programme")
         self.choice()
@@ -237,8 +243,9 @@ class Dl_Ready_Nav(Sous_Menu):
         r = Downloads(self.category)
         r.get_all(self.count)
 
-class Delete_Nav(Sous_Menu):
 
+class Delete_Nav(Sous_Menu):
+    """First delete menu, select a category you want delete"""
     def start(self):
         self.accueil()
 
@@ -288,7 +295,7 @@ class Delete_Nav(Sous_Menu):
 
     def delete(self, category):
         print(" ")
-        print("Voulez-vous supprimmer la categorie ", category ,"? (y/n)")
+        print("Voulez-vous supprimmer la categorie ", category, "? (y/n)")
         r = input('Réponse : ')
         if r == 'y':
             Data.delete_categories(category)
@@ -301,4 +308,3 @@ class Delete_Nav(Sous_Menu):
         else:
             print("Désolé je n'ai pas compris.")
             self.delete(category)
-

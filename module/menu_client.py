@@ -1,9 +1,12 @@
 # -*- coding: utf8 -*-
+"""Menu for use appli_client"""
 
 import re
 from module.bdd import Data, Data_substitut_score
 
+
 class Menu:
+    """The mecanisms of the menus"""
     HISTORIC = ["quit"]
     USERNAME = ''
     CATEGORY = ''
@@ -43,7 +46,6 @@ class Menu:
             id = int(self.statut.split("?")[1])
             self.new_menu(Substitut_Option(id))
 
-
         elif self.statut == "saved_product":
             self.new_menu(Saved_Product())
 
@@ -64,13 +66,12 @@ class Menu:
                 print("Il n'y a aucun produit")
             print("Veuillez d'abord utiliser gestion_bdd.py")
 
-
     def no_table(self):
         input("Base de donnée incomplète, veuillez d'abord lancer \"gestion_bdd\".")
         self.statut = "quit"
 
-    def new_menu(self, Objet):
-        menu = Objet
+    def new_menu(self, objet):
+        menu = objet
         while not menu.quit:
             menu.start_2()
         self.statut = menu.statut
@@ -108,18 +109,19 @@ class Menu:
     def special_action(self, r):
         return False
 
-    def wipe_historic(self, var):
+    @staticmethod
+    def wipe_historic(var):
         hist_temp = []
         for i in Menu.HISTORIC:
             if re.match(var, i):
                 pass
             else:
                 hist_temp.append(i)
-        Menu.HISTORIC = hist_temp[:]
+        Menu.HISTORIC = hist_temp
+
 
 class Login(Menu):
-
-
+    """First menu you reach if the database is ok"""
     def text(self):
         print("Bienvenue dans l'application pur Beurre")
         print("Veuillez entrer votre identifiant")
@@ -144,8 +146,9 @@ class Login(Menu):
             self.action()
             return True
 
-class New_Account(Menu):
 
+class New_Account(Menu):
+    """Menu for create a new account for use this appli"""
     def text(self):
         print("Entrer un nouveau identifiant :")
         print("entre 5 et 25 caratères")
@@ -162,8 +165,9 @@ class New_Account(Menu):
             self.action()
             return True
 
-class New_Password(Menu):
 
+class New_Password(Menu):
+    """Menu for enter a new password you want for the new account or if you want change your password"""
     def text(self):
         print("Entrer un mot de passe :")
         print("(entre 5 et 25 caractères)")
@@ -177,14 +181,16 @@ class New_Password(Menu):
             self.statut = "main_menu"
             return True
 
+
 class Password(Menu):
+    """Menu for enter the password for ligin in this appli"""
     def text(self):
         print("Entrer votre mot de passe :")
         print("(entre 5 et 25 caractères)")
         self.action()
 
     def special_action(self, r):
-        if len(r) <= 25 and len(r) >= 5:
+        if 25 >= len(r) >= 5:
             if Data.get_password(r, Menu.USERNAME):
                 self.statut = "main_menu"
             else:
@@ -192,7 +198,9 @@ class Password(Menu):
                 self.action()
             return True
 
+
 class Main_Menu(Menu):
+    """Main menu after the login"""
     def text(self):
         print("Bonjour", Menu.USERNAME, ", que voulez vous faire?")
         print("1 - Chercher un produit")
@@ -215,7 +223,9 @@ class Main_Menu(Menu):
             self.statut = "new_password"
             return True
 
+
 class Search_Menu(Menu):
+    """Select the category of product you want"""
     def __init__(self):
         Menu.__init__(self)
         self.categories = Data.get_categories()
@@ -225,7 +235,7 @@ class Search_Menu(Menu):
         print("Choisissez une categorie")
         count = 1
         for i in self.categories:
-            print (count, "-", i)
+            print(count, " - ", i)
             count += 1
         Menu.text(self)
         self.action()
@@ -233,7 +243,7 @@ class Search_Menu(Menu):
     def special_action(self, r):
         try:
             r = int(r)
-            if r >= 0 and r <= len(self.categories):
+            if 0 < r <= len(self.categories):
                 self.search_category(self.categories[r - 1])
                 return True
         except ValueError:
@@ -246,10 +256,11 @@ class Search_Menu(Menu):
         Menu.CATEGORY = r
         self.statut = "category_menu"
 
-class Category_Menu(Menu):
 
+class Category_Menu(Menu):
+    """Choose if you want all the product or if you want search with a word"""
     def text(self):
-        print("Il y a", Data.count_product(Menu.CATEGORY),"produits dans la catégorie", Menu.CATEGORY,'.')
+        print("Il y a", Data.count_product(Menu.CATEGORY), "produits dans la catégorie", Menu.CATEGORY, '.')
         print("Que voulez vous faire?")
         print("1 - Parcourrir la liste des produits.")
         print("2 - Rechercher avec un mot clé")
@@ -269,7 +280,14 @@ class Category_Menu(Menu):
             self.statut = "search_product"
             return True
 
+
 class Search_List(Menu):
+    """menu multi used. it return a list of all product you search
+    -all product of a category
+    -product of a category with a selected word
+    -better products from a selected product
+    -all product you have saved"""
+
     def __init__(self, page):
         Menu.__init__(self)
         self.page = page
@@ -284,9 +302,8 @@ class Search_List(Menu):
             max = len(Menu.SEARCH)
         return Menu.SEARCH[min: max]
 
-
     def text(self):
-        if self.list != []:
+        if self.list:
             count = 1
             for i in self.list:
                 print(count, "-", i.product_name, " ", i.id)
@@ -314,7 +331,9 @@ class Search_List(Menu):
                 self.statut = "product_file?" + id
                 return True
 
+
 class Search_Product(Menu):
+    """Search a list of products with a word"""
     def text(self):
         print("Veuillez entrer un mot clé.")
         Menu.text(self)
@@ -334,7 +353,11 @@ class Search_Product(Menu):
                 input("Aucun résultat.")
             return True
 
+
 class Product_File(Menu):
+    """menu when you select a product
+    you can search a better product
+    or save this product in your account"""
     def __init__(self, id):
         Menu.__init__(self)
         self.product = Data.get_product(id)
@@ -355,7 +378,6 @@ class Product_File(Menu):
         Menu.text(self)
         self.action()
 
-
     def special_action(self, r):
         if r == '1':
             self.product.save_product(Menu.USERNAME)
@@ -366,18 +388,21 @@ class Product_File(Menu):
             self.statut = "substitut_option?" + self.product.id
             return True
 
+
 class Substitut_Option(Menu):
+    """when you want a better product from a selected product, you can choose your wishs"""
     def __init__(self, id):
-        Product_File.__init__(self, id)
+        Menu.__init__(self)
+        self.product = Data.get_product(id)
         self.count = Data_substitut_score()
 
     def text(self):
-        print("Il y a " , self.count.all ," substituts pour" , self.product.product_name)
-        print("1 -" , self.count.sugar , "résultats pour un meilleur taux de sucre")
-        print("2 -" , self.count.salt  , "résultats pour un meilleur taux de sel")
-        print("3 -" , self.count.fat , "résultats pour un meilleur taux de matiere grasse")
-        print("4 -" , self.count.energy , "résultats pour un meilleur taux de calories")
-        print("5 -" , self.count.nutriscore , "résultats pour un meilleur score de nutrition")
+        print("Il y a ", self.count.all, " substituts pour", self.product.product_name)
+        print("1 - ", self.count.sugar, " résultats pour un meilleur taux de sucre")
+        print("2 - ", self.count.salt, " résultats pour un meilleur taux de sel")
+        print("3 - ", self.count.fat, " résultats pour un meilleur taux de matiere grasse")
+        print("4 - ", self.count.energy, " résultats pour un meilleur taux de calories")
+        print("5 - ", self.count.nutriscore, " résultats pour un meilleur score de nutrition")
         print("Sélectionner la catégorie que vous voulez rechercher")
         print("m - revenir au menu principal.")
         Menu.text(self)
@@ -402,20 +427,23 @@ class Substitut_Option(Menu):
         self.statut = "search_list?0"
         return True
 
+
 class Saved_Product(Menu):
+    """Menu when you want see all of your saved product
+    yours products will never be delete even if you delete his category in gestion_bdd"""
     def __init__(self):
         Menu.__init__(self)
         self.count = Data.count_saved(Menu.USERNAME)
 
     def text(self):
-        if self.count >0:
+        if self.count > 0:
             print("Vous avez", self.count, "produit enregistré")
-            self.special_action()
+            self.action()
         else:
             print("Désolé, vous n'aver pas de produits enregistré")
             self.statut = "main_menu"
 
-    def special_action(self):
+    def action(self):
         self.wipe_historic("^search_list*")
         Menu.SEARCH = Data.get_saved(Menu.USERNAME)
         if Menu.SEARCH:
@@ -423,4 +451,3 @@ class Saved_Product(Menu):
         else:
             print("Malheureusement aucuns de vos produits ne sont sur les bases de données")
             self.statut = "main_menu"
-

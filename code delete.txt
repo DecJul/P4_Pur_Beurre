@@ -1,0 +1,13 @@
+bdd
+
+    @classmethod
+    def save_log(cls):
+        global MYDB, MYCURSOR
+        with open("login_bdd.json") as f:
+            data = json.load(f)
+        MYDB = mysql.connector.connect(
+            host="localhost",
+            user=data["user"],
+            password=data["password"],
+            database="pur_beurre_p5")
+        MYCURSOR = MYDB.cursor()

@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+"""all function for use the database witch both programs"""
 
 import mysql.connector
 import json
@@ -9,8 +10,9 @@ MYCURSOR = ""
 
 
 class Data:
-
+    """manage the data beetween the database and the program"""
     def __init__(self, data):
+        """Same as New_product but only for appli_client"""
         self.product_name = data[1]
         self.id = data[2]
         self.nutriscore = data[3]
@@ -29,6 +31,7 @@ class Data:
 
     @classmethod
     def check_database(cls):
+        """used by both programs, check if the database is ok before use them"""
         global MYDB, MYCURSOR
         with open("login_bdd.json") as f:
             data = json.load(f)
@@ -41,7 +44,7 @@ class Data:
             MYCURSOR = MYDB.cursor()
             print("Connection à la database réussie!")
             categories = cls.check_table_categories()
-            print("la table categories existe avec",categories ,"catégories." )
+            print("la table categories existe avec", categories, "catégories.")
             products = cls.check_table_x("products")
             print("la table products existe avec", products, "produits.")
             ingredients = cls.check_table_x("ingredients")
@@ -86,6 +89,8 @@ class Data:
 
     @classmethod
     def check_database_root(cls, password):
+        """only in gestion_bdd, when the database is not ok
+        check if the password of root is ok"""
         global MYDB, MYCURSOR
         try:
             MYDB = mysql.connector.connect(
@@ -114,18 +119,6 @@ class Data:
                 return "quit"
 
     @classmethod
-    def save_log(cls):
-        global MYDB, MYCURSOR
-        with open("login_bdd.json") as f:
-            data = json.load(f)
-        MYDB = mysql.connector.connect(
-            host="localhost",
-            user=data["user"],
-            password=data["password"],
-            database="pur_beurre_p5")
-        MYCURSOR = MYDB.cursor()
-
-    @classmethod
     def create_database(cls):
         MYCURSOR.execute("CREATE DATABASE pur_beurre_p5")
         MYCURSOR.execute("USE pur_beurre_p5")
@@ -141,6 +134,7 @@ class Data:
 
     @classmethod
     def create_tables(cls):
+        """Creat all tables of the database"""
         sql = "DROP TABLE IF EXISTS products, accounts, categories, ingredients, products_saved, substituts"
         MYCURSOR.execute(sql)
 
@@ -213,6 +207,7 @@ class Data:
 
     @classmethod
     def create_log_user(cls, r):
+        """New user in SQL (you can type an user who already exist"""
         with open("login_bdd.json") as f:
             data = json.load(f)
         data["user"] = r
@@ -221,6 +216,7 @@ class Data:
 
     @classmethod
     def create_log_pwd(cls, r):
+        """New password in SQL"""
         with open("login_bdd.json") as f:
             data = json.load(f)
         data["password"] = r
@@ -230,6 +226,7 @@ class Data:
 
     @classmethod
     def new_log_sql(cls):
+        """creat new account in MySQL if no exist an grante allprivilege for the database pur beurre"""
         with open("login_bdd.json") as f:
             data = json.load(f)
         print("création du compte")
@@ -250,6 +247,7 @@ class Data:
 
     @classmethod
     def get_saved(cls, user):
+        """return all the product saved by an user in appli_client"""
         sql = "SELECT products.id, " \
               "products.product_name, " \
               "products_saved.product, " \
@@ -283,6 +281,8 @@ class Data:
 
     @classmethod
     def new_account(cls, pwd, user):
+        """register new account in appli_client
+        or register the password only if the already exist"""
         if Data.get_usernames(user):
             sql = "UPDATE accounts " \
                   "SET password = %s " \
@@ -297,6 +297,7 @@ class Data:
 
     @classmethod
     def get_password(cls, r, user):
+        """check if the password is ok"""
         sql = "SELECT password FROM accounts WHERE username = %s"
         val = (user,)
         MYCURSOR.execute(sql, val)
@@ -308,17 +309,19 @@ class Data:
 
     @classmethod
     def get_usernames(cls, r):
+        """check if username already exist"""
         sql = "SELECT username FROM accounts WHERE username = %s"
         val = (r,)
         MYCURSOR.execute(sql, val)
         myresult = MYCURSOR.fetchone()
-        if myresult == None:
+        if myresult is None:
             return False
         else:
             return True
 
     @classmethod
     def get_categories(cls):
+        """return list all categories in the database"""
         sql = "SELECT DISTINCT category FROM categories"
         MYCURSOR.execute(sql)
         myresult = MYCURSOR.fetchall()
@@ -329,6 +332,7 @@ class Data:
 
     @classmethod
     def search(cls, r, category):
+        """return all products in a category with a selected word"""
         sql = "SELECT * " \
               "FROM products " \
               "WHERE MATCH(product_name)" \
@@ -347,6 +351,7 @@ class Data:
 
     @classmethod
     def count_product(cls, category):
+        """return the number of products in one category"""
         sql = "SELECT COUNT(*) FROM categories WHERE category = %s"
         val = (category,)
         MYCURSOR.execute(sql, val)
@@ -354,7 +359,8 @@ class Data:
         return myresult[0]
 
     @classmethod
-    def get_products(self, category):
+    def get_products(cls, category):
+        """return all product from one category"""
         sql = "SELECT * " \
               "FROM products " \
               "WHERE _id in (SELECT id_product " \
@@ -370,7 +376,8 @@ class Data:
         return list_products
 
     @classmethod
-    def get_product(self, id):
+    def get_product(cls, id):
+        """return only one product from a selected id"""
         sql = "SELECT * " \
               "FROM products " \
               "WHERE _id = %s"
@@ -381,6 +388,7 @@ class Data:
 
     @classmethod
     def delete_categories(cls, category):
+        """delete all products from a category in gestion_bdd"""
         sql = "DELETE FROM categories WHERE category = %s"
         val = (category,)
         MYCURSOR.execute(sql, val)
@@ -396,7 +404,9 @@ class Data:
         print(MYCURSOR.rowcount, "record(s) deleted")
         return False
 
+
 class Data_substitut_score:
+    """use when we search a new product"""
     def __init__(self):
         self.sugar = self.count_score("sugar")
         self.salt = self.count_score("salt")
@@ -405,7 +415,9 @@ class Data_substitut_score:
         self.nutriscore = self.count_score("nutriscore")
         self.all = self.count_all()
 
-    def get_products(self, var):
+    @staticmethod
+    def get_products(var):
+        """return a list of better product from a selected option"""
         sql = "SELECT products.id, " \
               "products.product_name, " \
               "products._id, " \
@@ -427,14 +439,18 @@ class Data_substitut_score:
             list_products.append(product)
         return list_products
 
-    def count_all(self):
+    @staticmethod
+    def count_all():
+        """return the number of better products"""
         sql = "SELECT COUNT(*) " \
               "FROM substituts "
         MYCURSOR.execute(sql)
         myresult = MYCURSOR.fetchone()
         return myresult[0]
 
-    def count_score(self, var):
+    @staticmethod
+    def count_score(var):
+        """return the number of better products from each option"""
         sql = "SELECT COUNT(*) " \
               "FROM substituts " \
               "WHERE " + var + " = 1"
@@ -444,6 +460,7 @@ class Data_substitut_score:
 
     @classmethod
     def init_substitut(cls, id):
+        """create a table of all better products"""
         sql = "TRUNCATE TABLE substituts "
         MYCURSOR.execute(sql)
         MYDB.commit()
@@ -467,32 +484,34 @@ class Data_substitut_score:
 
     @classmethod
     def init_stat(cls, id, var):
+        """check if wich product is better or not for each option"""
         sql = "UPDATE substituts " \
               "SET " + var + " = 1 " \
-                             "WHERE id_product in " \
-                             "(SELECT _id " \
-                             "FROM products " \
-                             "WHERE " + var + " != 'non communiqué' " \
-                                              "AND " + var + " < (SELECT " + var + " " \
-                                                                                   "FROM products WHERE _id = %s))  "
+              "WHERE id_product in " \
+              "(SELECT _id " \
+              "FROM products " \
+              "WHERE " + var + " != 'non communiqué' " \
+              "AND " + var + " < (SELECT " + var + " " \
+              "FROM products WHERE _id = %s))  "
         val = (id,)
         MYCURSOR.execute(sql, val)
         MYDB.commit()
 
         sql = "UPDATE substituts " \
               "SET " + var + " = 0 " \
-                             "WHERE id_product in " \
-                             "(SELECT _id " \
-                             "FROM products " \
-                             "WHERE " + var + " = 'non communiqué' OR " \
-                                              "" + var + " >= (SELECT " + var + " " \
-                                                                                "FROM products WHERE _id = %s)) "
+              "WHERE id_product in " \
+              "(SELECT _id " \
+              "FROM products " \
+              "WHERE " + var + " = 'non communiqué' OR " \
+              "" + var + " >= (SELECT " + var + " " \
+              "FROM products WHERE _id = %s)) "
         val = (id,)
         MYCURSOR.execute(sql, val)
         MYDB.commit()
 
     @classmethod
     def init_score_search(cls, id):
+        """calcul the search score of the product for a better order of best products"""
         sql = "SELECT id_product " \
               "FROM substituts"
         MYCURSOR.execute(sql)
@@ -511,19 +530,24 @@ class Data_substitut_score:
             MYCURSOR.execute(sql, val)
             MYDB.commit()
 
-class Datas_New_product:
 
+class Datas_New_product:
+    """when we need to save in the database just right after we DL some new data"""
     def __init__(self, data, category):
         self.product = Datas_product(data)
         self.ingredients = Datas_ingredients(data["ingredients"])
         self.category = category
 
     def insert(self):
+        """register the data in the database"""
         self.product.insert(self.category)
         self.ingredients.insert(self.product.id)
 
+
 class Datas_product:
+    """check and save the new product in the database"""
     def __init__(self, data):
+        """Same as Data but only for gestion_bdd"""
         self.name = self.get_name(data)
         self.id = data["_id"]
         self.nutriscore = self.get_nutriscore(data)
@@ -533,6 +557,7 @@ class Datas_product:
         self.energy = self.get_energy(data["nutriments"])
 
     def insert(self, category):
+        """register the product in the database"""
         val = (category,
                self.id)
         sql = "INSERT IGNORE INTO categories (category, id_product) " \
@@ -552,7 +577,8 @@ class Datas_product:
         MYCURSOR.execute(sql, val)
         MYDB.commit()
 
-    def get_name(self, data):
+    @staticmethod
+    def get_name(data):
         if "product_name_fr" in data.keys():
             return data["product_name_fr"]
         elif "product_name" in data.keys():
@@ -562,38 +588,44 @@ class Datas_product:
         else:
             return "nom_inconnu"
 
-    def get_nutriscore(self, data):
+    @staticmethod
+    def get_nutriscore(data):
         if "nutriscore_grade" in data.keys():
             return data["nutriscore_grade"]
         else:
             return "non communiqué"
 
-    def get_salt(self, data):
+    @staticmethod
+    def get_salt(data):
         if "salt" in data.keys():
             return data["salt"]
         else:
             return "non communiqué"
 
-    def get_sugar(self, data):
+    @staticmethod
+    def get_sugar(data):
         if "sugars" in data.keys():
             return data["sugars"]
         else:
             return "non communiqué"
 
-    def get_fat(self, data):
+    @staticmethod
+    def get_fat(data):
         if "fat" in data.keys():
             return data["fat"]
         else:
             return "non communiqué"
 
-    def get_energy(self, data):
+    @staticmethod
+    def get_energy(data):
         if "energy" in data.keys():
             return data["energy"]
         else:
             return "non communiqué"
 
-class Datas_ingredients:
 
+class Datas_ingredients:
+    """when we save new ingredient in the database"""
     def __init__(self, data):
         self.ingredients = self.get_ingredients(data)
 
@@ -609,7 +641,9 @@ class Datas_ingredients:
             MYCURSOR.execute(sql, val)
             MYDB.commit()
 
-    def get_ingredients(self, data):
+    @staticmethod
+    def get_ingredients(data):
+        """select the 10 first ingredient in the product"""
         ingredients = []
         for i in range(10):
             if i < len(data):
@@ -617,19 +651,23 @@ class Datas_ingredients:
                 ingredients.append(ingredient)
         return ingredients
 
+
 class Datas_ingredient:
+    """check and prepare each new ingredient"""
     def __init__(self, data):
         self.name = data["text"]
         self.percent = self.get_percent_max(data)
         self.rank = self.get_rank(data)
 
-    def get_rank(self, data):
+    @staticmethod
+    def get_rank(data):
         if "rank" in data.keys():
             return data["rank"]
         else:
             return 99
 
-    def get_percent_max(self, data):
+    @staticmethod
+    def get_percent_max(data):
         if "percent_max" in data.keys():
             return data["percent_max"]
         else:
