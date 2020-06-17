@@ -1,0 +1,65 @@
+CREATE TABLE accounts (
+id INT(18) NOT NULL AUTO_INCREMENT,
+name VARCHAR(125),
+password VARCHAR(125),
+PRIMARY KEY (id))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE cat_gen_master (
+master_id INT(9) NOT NULL,
+generic_id INT(9) NOT NULL,
+PRIMARY KEY (master_id, generic_id),
+CONSTRAINT fk_master_id
+    FOREIGN KEY (master_id)
+    REFERENCES products(code),
+CONSTRAINT fk_generic_id
+    FOREIGN KEY (generic_id)
+    REFERENCES categories_hierarchy(id))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE categories_hierarchy (
+id INT(9) NOT NULL AUTO_INCREMENT,
+name VARCHAR(125),
+cat_sup_id INT(9),
+PRIMARY KEY (id),
+CONSTRAINT fk_cat_sup_id
+    FOREIGN KEY (cat_sup_id)
+    REFERENCES categories_hierarchy(id))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE master_categories (
+id INT(9) NOT NULL AUTO_INCREMENT,
+name VARCHAR(125),
+PRIMARY KEY (id))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE prod_categ (
+prod_id INT(9) NOT NULL,
+cat_id INT(9) NOT NULL,
+PRIMARY KEY (prod_id, cat_id),
+CONSTRAINT fk_product_id
+    FOREIGN KEY (prod_id)
+    REFERENCES products(code),
+CONSTRAINT fk_cat_id
+    FOREIGN KEY (cat_id)
+    REFERENCES categories_hierarchy(id))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE products (
+code INT(18) NOT NULL AUTO_INCREMENT,
+name VARCHAR(125) NOT NULL,
+nutriscore INT(9) NOT NULL,
+PRIMARY KEY (code))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE products_saved (
+prod_id INT(18) NOT NULL,
+user_id INT(18) NOT NULL,
+PRIMARY KEY (prod_id, user_id),
+CONSTRAINT fk_product_id
+    FOREIGN KEY (prod_id)
+    REFERENCES products(code),
+CONSTRAINT fk_user_id
+    FOREIGN KEY (user_id)
+    REFERENCES accounts(id))
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4

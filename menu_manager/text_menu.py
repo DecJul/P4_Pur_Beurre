@@ -5,69 +5,65 @@ from menu_manager.text_construct import ConstructText
 
 
 end_page = "r - retour en arrière\n" \
-            "q - quitter le programme\n"
+            "q - quitter le programme"
 
 TEXT_DTB_ADMIN = {
-    "init":             "Connexion à la base de donnée en cours...\n"
-                        "",
-
-    "database_ok":      "Connexion réussi!\n"
-                        "",
-
-    "database_not_ok":  "Base de donnée non trouvée!\n"
-                        "Création de la base de donnée...\n"
-                        "Veuillez entrer le mot de passe du compte root de mySQL.\n"
-                        "(mot de passe non enregistré)\n"
-                        "'q' pour quitter le programme.\n"
-                        "",
-
-    "bad_root_pwd":     "Désolé ce mot de passe ne marche pas.\n"
-                        "Veuillez retenter ou quitter le programme avec 'q'.",
-
-    "root_password_ok": "Mot de passe ok!"
-                        "",
-
-    "main_menu":        "__MENU PRINCIPAL__ \n"
-                        "\n"
-                        "Que Voulez vous faire ?\n"
-                        "1 - Télécharger des données.\n"
-                        "2 - Supprimer des données.\n"
-                        "q - quitter le programme\n"
-                        "",
-
-    "download_menu":    "__TELECHARGEMENT DE DONNEES__\n"
-                        "",
-
-    "download_data":    ConstructText.all_categories,
-
-    "download_no_data": "Vous n'avez actuellement aucune données\n"
-                        "",
-
-    "download_choice":  "Quelle nouvelle catégorie voulez vous télécharger?\n"
-                        + end_page + "",
-
-    "download_confirm": ConstructText.confirm_download,
-
-    "download_go":      "Téléchargement en cours....\n"
-                        "Veuillez patienter....\n"
-                        "",
-
-    "download_done":    ConstructText.download_done,
+    "init":                 "\nConnexion à la base de donnée en cours...\n",
 
 
-    "delete_menu_init": "__SUPPRESSION DE DONNEES__\n"
-                        "",
 
-    "delete_no_date":   "Désolé, il n'y a aucune donnée à supprimer.\n"
-                        "",
 
-    "delete_menu":      ConstructText.all_categories,
 
-    "delete_choice":    "Quelle catégorie voulez vous supprimer?\n"
-                        + end_page +
-                        "",
+    "bad_root_pwd":         "\nDésolé ce mot de passe ne marche pas.\n"
+                            "Veuillez retenter ou quitter le programme avec 'q'.",
 
-    "delete_confirm":   ConstructText.confirm_delete,
+    "root_password_ok":     "\nMot de passe ok!",
 
-    "delete_done":      ConstructText.delete_done
+    "database_ok":          "\nConnexion réussi!\n"
+                            "\nConnexion au réseau...",
+
+    "no_network":           "\nConnexion réseau impossible",
+
+    "network_ok":           "Connexion réseau réussie!\n",
+
+    "main_menu":            "Connexion réseau réussie!\n"
+                            "\n__MENU PRINCIPAL__ \n"
+                            "\nQue Voulez vous faire ?\n"
+                            "1 - Télécharger des données.\n"
+                            "2 - Supprimer des données.\n"
+                            "q - quitter le programme",
+
+    "download_init":        "\n__TELECHARGEMENT DE DONNEES__\n",
+
+    "download_menu":        ConstructText.all_categories,
+
+    "download_no_data":     "\nVous n'avez actuellement aucune données\n",
+
+    "download_choice":      "Quelle nouvelle catégorie voulez vous télécharger?\n"
+                            + end_page,
+
+    "download_no_found":    "Désolé, il n'y a aucune donnée à télécharger",
+
+    "download_confirm":     ConstructText.confirm_download,
+
+    "download":             "\nTéléchargement en cours....\n"
+                            "Veuillez patienter....\n",
+
+    "download_done":        ConstructText.download_done,
+
+
+    "delete_init":          "\n__SUPPRESSION DE DONNEES__\n",
+
+    "delete_no_date":       "\nDésolé, il n'y a aucune donnée à supprimer.\n",
+
+    "delete_menu":          ConstructText.all_categories,
+
+    "delete_choice":        "\nQuelle catégorie voulez vous supprimer?\n"
+                            + end_page,
+
+    "delete_no_found":      "\nSélection impossible, veuillez réessayer.\n",
+
+    "delete_confirm":       ConstructText.confirm_delete,
+
+    "delete_done":          ConstructText.delete_done
     }
