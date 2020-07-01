@@ -50,8 +50,9 @@ if __name__ == '__main__':
     session = Tables()
     table1 = session.categories_hierarchy(id='', name="pizza",categ_parent_id="end")
     table2 = session.categories_hierarchy(id='', name="pizza 4 fromage",categ_parent_id=1)
-    table3 = session.categories_hierarchy(id='', name="pizza mozzarella",categ_parent_id=1)
+    table3 = session.products()
     join = [table1, table2, table3]
-    sql = table1.insert(join)
+    var = table3.select(column=("id", "name"), where="id = 3584662", order="name")
+    sql = table2.delete("categories", var, value_in=True)
     print(sql)
 

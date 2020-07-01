@@ -5,6 +5,21 @@ class SQLConstruct:
     def __init__(self):
         pass
 
+    @staticmethod
+    def new_log_mysql(user, pwd):
+        sql = "CREATE USER IF NOT EXISTS '%s'@'localhost' IDENTIFIED BY '%s'" % (user, pwd)
+        return sql
+
+    @staticmethod
+    def grant_privilege(user, database):
+        sql = "GRANT ALL PRIVILEGES ON %s.* TO '%s'@'localhost'" % (database, user)
+        return sql
+
+    @staticmethod
+    def create_database(database):
+        sql = "CREATE DATABASE IF NOT EXISTS %s" % database
+        return sql
+
     def create_table(self):
         contents = self.__dict__
         str_sql = "CREATE TABLE " + self.table_name + " (\n"
@@ -65,35 +80,32 @@ class SQLConstruct:
         return " \nORDER BY " + order
 
     def insert(self, multiple=False):
-        sql = "INSERT IGNORE \n    INTO " + self.table_name + " ("
+        sql = "INSERT IGNORE \n    INTO " + self.table_name + "\n           ("
         for i, j in self.__dict__.items():
             if j:
-                print("coucou")
                 sql += i + ", "
-        sql = sql[:-2] + ") \n    VALUES ("
+        sql = sql[:-2] + ") \n    VALUES "
         if multiple:
             sql += self.insert_multiple(multiple)
             return sql
-        for j in self.__dict__.values():
-            if j:
-                try:
-                    int(j)
-                    sql += "" + j + ", "
-                except ValueError:
-                    sql += "'" + j + "', "
-        sql = sql[:-2] + ')'
-        return sql
+        else:
+            sql += self.insert_line()
+            return sql[:-13]
 
     @staticmethod
     def insert_multiple(multiple):
         sql = ''
         for i in multiple:
-            for j in i.__dict__.values():
-                if j:
-                    print(j)
-                    try:
-                        sql += "%s, " % int(j)
-                    except ValueError:
-                        sql += "'" + j + "', "
-            sql = sql[:-2] + '), \n    ('
-        return sql[:-8]
+            sql += i.insert_line()
+        return sql[:-13]
+
+    def insert_line(self):
+        sql = '('
+        for j in self.__dict__.values():
+            if j:
+                try:
+                    sql += "%s, " % int(j)
+                except ValueError:
+                    sql += "'" + j + "', "
+        sql = sql[:-2] + "),\n           "
+        return sql

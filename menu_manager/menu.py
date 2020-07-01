@@ -8,8 +8,7 @@ class Menu:
         self.statut = statut
         self.TEXT = list_dict[0]
         self.ANSWER = list_dict[1]
-        self.OPEN_ANSWER = list_dict[2]
-        self.ACTION = list_dict[3]
+        self.ACTION = list_dict[2]
         self.dict = {"text": (self.TEXT.keys(), self.text),
                      "answer": (self.ANSWER.keys(), self.answer),
                      "action": (self.ACTION.keys(), self.action)}
@@ -21,6 +20,10 @@ class Menu:
                 if self.statut in keys:
                     self.dict[i][1]()
             self.statut = self.new_statut
+            print(self.statut)
+            test = input("press enter or q")
+            if test == "q":
+                self.statut = "leave"
 
     def text(self):
         try:

@@ -1,11 +1,13 @@
 # -*- coding: utf8 -*-
 if __name__ == "tables.products_saved":
     from sql_construct import SQLConstruct
+    from dtb_connect import DtbConnect
 else:
     from dtb_manager.sql_construct import SQLConstruct
+    from dtb_manager.dtb_connect import DtbConnect
 
 
-class ProductsSaved(SQLConstruct):
+class ProductsSaved(SQLConstruct, DtbConnect):
     table_name = "products_saved"
     constraint = ("PRIMARY KEY (prod_id, user_id), \n"
                   "CONSTRAINT fk_user_id \n"

@@ -22,12 +22,15 @@ class ApiManager:
             "page_size": 2,
             "page": 1,
             "json": 1,
-            "fields": Downloads.FIELDS}
+            "fields": ApiManager.FIELDS}
 
-    def check_net_work(self):
+    def check_network(self):
         """Check the connection with openfoodfact"""
         r = requests.get(self.URL, params=self.payload)
-        return True if r.status_code == 200 else False
+        response = True if r.status_code == 200 else False
+        if not response:
+            print("Erreur: Connection impossible!")
+        return response
 
     def count(self):
         """Check if this category exist"""

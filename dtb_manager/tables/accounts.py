@@ -1,12 +1,10 @@
 # -*- coding: utf8 -*-
 
-if __name__ == "tables.accounts":
-    from sql_construct import SQLConstruct
-else:
-    from dtb_manager.sql_construct import SQLConstruct
+from dtb_manager.sql_construct import SQLConstruct
+from dtb_manager.dtb_connect import DtbConnect
 
 
-class Accounts(SQLConstruct):
+class Accounts(SQLConstruct, DtbConnect):
     table_name = "accounts"
     constraint = "PRIMARY KEY (id)"
 

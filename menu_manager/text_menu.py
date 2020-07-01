@@ -9,25 +9,18 @@ end_page = "r - retour en arrière\n" \
 
 TEXT_DTB_ADMIN = {
     "init":                 "\nConnexion à la base de donnée en cours...\n",
+    "need_root":            "\nVeuillez entrer le mot de passe root MySQL."
+                            "\n(mot de passe non enregistré)",
+    "new_user_mysql":       "\nCréation de log MySQL..."
+                            "\nVeuillez entrer un nouveau identifiant MySQL.",
+    "new_pwd_mysql":        "\nVeuillez entrer un nouveau mot de passe MySQL.",
+    "create_database":      "\nCréation de la base de données...",
+    "grant_privilege":      "\nCession de droits à la base de données...",
+    "create_tables":        "\nCréation des tables de données...",
+    "database_ok":          "\nVérification des tables de données...",
+    "tables_ok":            "\nVérification réseau...",
 
-
-
-
-
-    "bad_root_pwd":         "\nDésolé ce mot de passe ne marche pas.\n"
-                            "Veuillez retenter ou quitter le programme avec 'q'.",
-
-    "root_password_ok":     "\nMot de passe ok!",
-
-    "database_ok":          "\nConnexion réussi!\n"
-                            "\nConnexion au réseau...",
-
-    "no_network":           "\nConnexion réseau impossible",
-
-    "network_ok":           "Connexion réseau réussie!\n",
-
-    "main_menu":            "Connexion réseau réussie!\n"
-                            "\n__MENU PRINCIPAL__ \n"
+    "main_menu":            "\n__MENU PRINCIPAL__ \n"
                             "\nQue Voulez vous faire ?\n"
                             "1 - Télécharger des données.\n"
                             "2 - Supprimer des données.\n"
