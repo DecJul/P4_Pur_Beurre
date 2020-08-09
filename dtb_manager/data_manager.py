@@ -81,3 +81,12 @@ class DataManager:
         session = TablesManager()
         categories = session.get_all("master_categories", "name")
         return categories
+
+    @staticmethod
+    def insert(data):
+        pass
+
+    @staticmethod
+    def delete(category):
+        pass
+

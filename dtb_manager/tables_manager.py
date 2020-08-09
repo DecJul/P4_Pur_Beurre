@@ -47,6 +47,6 @@ class TablesManager:
 
     def get_all(self, name, column):
         table = self.__dict__[name]()
-        sql = table.select(column=column)
+        sql = table.select(column=[column])
         table.execute(sql)
         return table.fetchall()

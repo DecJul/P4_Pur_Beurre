@@ -59,7 +59,7 @@ class Actions:
 
     @staticmethod
     def download_init():
-        no_empty = DataManager.get_all_category()
+        no_empty = DataManager.get_all_categories()
         if no_empty:
             return "download_menu"
         else:
@@ -68,12 +68,12 @@ class Actions:
     @staticmethod
     def download():
         param = Historic.get_param()
-        data = ApiManager.download(param[0])
-        DataManger.insert(data)
+        data = ApiManager.get_all(param[0])
+        DataManager.insert(data)
 
     @staticmethod
     def delete_init():
-        no_empty = DataManager.get_all_category()
+        no_empty = DataManager.get_all_categories()
         if no_empty:
             return "delete_menu"
         else:
@@ -82,7 +82,7 @@ class Actions:
     @staticmethod
     def delete():
         param = Historic.get_param()
-        DataManger.delete(param[0])
+        DataManager.delete(param[0])
 
     @staticmethod
     def previous():

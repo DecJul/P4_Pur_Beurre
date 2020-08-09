@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
 import json
+from api_manager.api_manager import ApiManager
 from dtb_manager.data_manager import DataManager
 from menu_manager.historic import Historic
 
@@ -53,12 +54,19 @@ class AnswerConstruct:
 
 
     @classmethod
-    def download_choice(self, answer):
-        return "" if self.select_category(answer) else ""
+    def download_choice(cls, answer):
+        connect = ApiManager(answer)
+        count = connect.count()
+        if count == 0:
+            return "download_no_found"
+        else:
+            content = {"category": answer, "count": count}
+            Historic.current_page.param = content
+            return "download_confirm"
 
     @classmethod
-    def delete_choice(self, answer):
-        if self.select_category(answer):
+    def delete_choice(cls, answer):
+        if cls.select_category(answer):
             return "delete_confirm"
         else:
             return "delete_no_found"

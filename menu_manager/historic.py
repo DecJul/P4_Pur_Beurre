@@ -17,7 +17,7 @@ class Historic:
         self.current_page = self
 
     @classmethod
-    def previouspage(cls): #si dict vide?
+    def previous_page(cls): #si dict vide?
         while cls.HISTORIC[-1] == cls.current_page:
             cls.HISTORIC.pop()
         cls.current_page = cls.HISTORIC.pop()
